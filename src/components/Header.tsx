@@ -195,6 +195,11 @@ const Header = () => {
                   Tech Feed
                 </Button>
               </Link>
+              <Link to="/chat">
+                <Button variant="ghost" className={`w-full justify-start text-muted-foreground hover:text-foreground ${location.pathname === '/chat' ? 'text-primary bg-primary/10' : ''}`}>
+                  Chat
+                </Button>
+              </Link>
               <Link to="/complaints">
                 <Button variant="ghost" className={`w-full justify-start text-muted-foreground hover:text-foreground ${location.pathname === '/complaints' ? 'text-primary bg-primary/10' : ''}`}> 
                   Complaints

@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import { useTimetable } from "@/hooks/useTimetable";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -88,10 +88,16 @@ const Timetable = () => {
     <>
       <Header />
       <div className="container mx-auto px-4 py-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4">My Timetable</h1>
+        <div className="bg-gradient-primary rounded-2xl p-6 text-white shadow-glow mb-6 flex items-center">
+          <Calendar className="h-8 w-8 mr-3" />
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1">My Timetable</h1>
+            <p className="text-sm opacity-90">Plan your study schedule efficiently</p>
+          </div>
+        </div>
         <Card className="p-4 overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead>
+            <thead className="bg-muted/50">
               <tr>
                 <th className="text-left p-2">Day</th>
                 <th className="text-left p-2">Start</th>

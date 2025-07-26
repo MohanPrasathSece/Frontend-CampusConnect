@@ -48,7 +48,7 @@ const Marketplace = () => {
         <div className="flex items-center justify-between">
           <div className="bg-blue-600 px-4 py-3 rounded-xl shadow flex flex-col items-center text-white animate-fade-in">
             <span className="text-xl md:text-2xl font-bold leading-tight">Student Marketplace</span>
-            <span className="text-xs md:text-sm tracking-wide opacity-90 mt-0.5">BUY &amp; SELL ITEMS HERE</span>
+            <span className="text-xs md:text-sm tracking-wide opacity-90 mt-0.5">Swap • Shop • Save</span>
           </div>
           {user && (
             <Button onClick={() => setShowAdd(true)}>List Item</Button>

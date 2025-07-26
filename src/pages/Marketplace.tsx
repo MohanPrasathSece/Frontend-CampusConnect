@@ -24,6 +24,7 @@ type Item = {
   contact: string;
   category: string;
   seller: string;
+  image?: string;
   interests?: Interest[];
 };
 
@@ -33,7 +34,8 @@ const Marketplace = () => {
   const qc = useQueryClient();
   const [deletingId,setDeletingId]=useState<string|null>(null);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', price: '', category: 'books', contact: '', days: 7 });
+  const [form, setForm] = useState({ title: '', description: '', image:'', price: '', category: 'books', contact: '', days: 7 });
+  const [interestLoadingId,setInterestLoadingId]=useState<string|null>(null);
 
   return (
     <>
@@ -48,7 +50,8 @@ const Marketplace = () => {
         <div className="space-y-4">
           {items.map(item => (
             <Card key={item._id} className="p-4 flex flex-col md:flex-row md:items-center md:justify-between">
-              <div className="flex-1 space-y-1">
+              {item.image && <img src={item.image} alt={item.title} className="w-full md:w-32 h-32 object-cover rounded mb-2" />}
+               <div className="flex-1 space-y-1">
                 <h2 className="font-semibold text-lg">{item.title}</h2>
                 <p className="text-sm text-muted-foreground">{item.description}</p>
                 <p className="text-sm">Type: {item.category}</p>
@@ -59,12 +62,17 @@ const Marketplace = () => {
                     item.interests?.some(i=>i.user===user.id) ? (
                       <span className="text-green-600 font-medium">Requested</span>
                     ) : (
-                      <Button size="sm" variant="outline" onClick={async()=>{
+                      <Button size="sm" variant="outline" disabled={interestLoadingId===item._id} onClick={async()=>{
                         const phone=prompt('Your phone number');
                         if(!phone) return;
-                        await api.post(`/marketplace/${item._id}/interested`,{phone});
-                        qc.invalidateQueries({queryKey:['marketplace']});
-                      }}>Interested</Button>
+                        try{
+                          setInterestLoadingId(item._id);
+                          await api.post(`/marketplace/${item._id}/interested`,{phone});
+                          qc.invalidateQueries({queryKey:['marketplace']});
+                        }finally{
+                          setInterestLoadingId(null);
+                        }
+                      }}>{interestLoadingId===item._id?'Sending...':'Interested'}</Button>
                     )
                   )}
                   {user && (user.id===item.seller || user.role==='admin') && (
@@ -76,7 +84,7 @@ const Marketplace = () => {
                     }}>View Interests</Button>
                   )}
 
-                  {(!user || user.id!==item.seller) && (
+                  {user && user.id!==item.seller && item.interests?.some(i=>i.user===user.id) && (
                     <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
                   )}
                   {user && (user.id===item.seller || user.role==='admin') && (
@@ -108,6 +116,7 @@ const Marketplace = () => {
             <DialogHeader>List an Item</DialogHeader>
             <Input placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
             <textarea className="border rounded p-2 w-full" rows={3} placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} />
+            <Input placeholder="Image URL (optional)" value={form.image} onChange={e=>setForm({...form,image:e.target.value})}/>
             <div className="space-y-1 w-full">
               <label className="text-sm font-medium">Price (₹)</label>
               <Input type="number" placeholder="0 for free" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/>
@@ -128,7 +137,7 @@ const Marketplace = () => {
                 await api.post('/marketplace',{...form,price:Number(form.price||0)});
                 qc.invalidateQueries({queryKey:['marketplace']});
                 setShowAdd(false);
-                setForm({ title: '', description: '', price: '', category: 'books', contact: '', days: 7 });
+                setForm({ title: '', description: '', image:'', price: '', category: 'books', contact: '', days: 7 });
               }}>Post</Button>
             </DialogFooter>
           </DialogContent>

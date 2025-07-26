@@ -63,7 +63,7 @@ const Marketplace = () => {
             const displayPrice = item.price===0 ? 'Free' : `₹${item.price}`;
             const isMe = user && user.id === item.seller;
             return (
-              <Card key={item._id} className={`p-4 flex flex-col md:flex-row md:items-center md:justify-between ${isSold ? 'opacity-90' : ''}`}>
+              <Card key={item._id} className={`p-4 flex flex-col md:flex-row md:items-center md:justify-between ${isSold ? 'bg-green-50 border border-green-300' : ''}`}>
                 {item.image && <img src={item.image} alt={item.title} className="w-full md:w-32 h-32 object-cover rounded mb-2" />}
                 <div className="flex-1 space-y-1">
                   <h2 className="font-semibold text-lg">{item.title}</h2>
@@ -125,7 +125,7 @@ const Marketplace = () => {
               <div className="mt-2 md:mt-0 text-primary font-bold min-w-[80px] text-right">
                 {isSold ? (
                   user && user.id===item.seller ? (
-                    <span className="text-green-600">Closed</span>
+                    <span className="text-green-600 font-semibold">Sold</span>
                   ) : (
                     <span className="text-red-500">Sold</span>
                   )

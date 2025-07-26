@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import SkillMarket from "./pages/SkillMarket";
 import Polls from "./pages/Polls";
 import TechNews from "./pages/TechNews";
+import Marketplace from "./pages/Marketplace";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/skills" element={<PrivateRoute><SkillMarket/></PrivateRoute>} />
           <Route path="/polls" element={<PrivateRoute><Polls/></PrivateRoute>} />
           <Route path="/technews" element={<PrivateRoute><TechNews/></PrivateRoute>} />
+          <Route path="/marketplace" element={<PrivateRoute><Marketplace/></PrivateRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

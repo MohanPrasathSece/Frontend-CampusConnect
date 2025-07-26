@@ -180,6 +180,11 @@ const Header = () => {
                   Timetable
                 </Button>
               </Link>
+              <Link to="/marketplace">
+                <Button variant="ghost" className={`w-full justify-start text-muted-foreground hover:text-foreground ${location.pathname === '/marketplace' ? 'text-primary bg-primary/10' : ''}`}>
+                  Marketplace
+                </Button>
+              </Link>
               <Link to="/skills">
                 <Button variant="ghost" className={`w-full justify-start text-muted-foreground hover:text-foreground ${location.pathname === '/skills' ? 'text-primary bg-primary/10' : ''}`}>
                   Skill Market

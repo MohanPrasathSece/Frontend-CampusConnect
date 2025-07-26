@@ -112,7 +112,9 @@ const LostFound = () => {
       <Header />
       <div className="container mx-auto px-4 py-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Lost & Found</h1>
+          <div className="bg-blue-600 px-4 py-3 rounded-xl shadow flex flex-col items-center text-white mb-4">
+            <span className="text-xl md:text-2xl font-bold leading-tight">Lost &amp; Found</span>
+          </div>
           <div className="flex gap-2">
             <Button variant="campus-outline" onClick={() => setShowReport(true)}>
               <Plus className="h-4 w-4 mr-2" /> Report Item

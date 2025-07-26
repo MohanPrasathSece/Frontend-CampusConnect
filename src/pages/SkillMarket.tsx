@@ -98,7 +98,9 @@ const SkillMarket = () => {
       <Header />
       <div className="container mx-auto px-4 py-6 space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Skill Exchange Marketplace</h1>
+          <div className="bg-blue-600 px-4 py-3 rounded-xl shadow flex flex-col items-center text-white mb-4">
+            <span className="text-xl md:text-2xl font-bold leading-tight">Skill Exchange Marketplace</span>
+          </div>
           <Button onClick={() => setShowOffer(true)}>Offer a Skill</Button>
         </div>
 

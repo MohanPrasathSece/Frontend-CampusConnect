@@ -26,9 +26,15 @@ const TechNews = () => {
     <>
       <Header />
       <div className="mx-auto max-w-3xl px-4 py-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4 flex items-center">
-          <Newspaper className="h-6 w-6 mr-2 text-primary" /> Tech News & Opportunities
-        </h1>
+        <div className="bg-gradient-primary rounded-2xl p-6 text-white shadow-glow mb-6">
+          <div className="flex items-center">
+            <Newspaper className="h-8 w-8 mr-3" />
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold mb-1">Tech News & Opportunities</h1>
+              <p className="text-sm opacity-90">Latest tech updates, hackathons, internships & more</p>
+            </div>
+          </div>
+        </div>
         {/* Post form */}
         <Card className="p-6 mb-6 space-y-4">
           <h2 className="font-medium">Share opportunity / news</h2>

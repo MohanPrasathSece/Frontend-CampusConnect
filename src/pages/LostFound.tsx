@@ -297,7 +297,7 @@ const LostFound = () => {
 
       {/* View responses dialog */}
       <Dialog open={!!viewingResponses} onOpenChange={() => setViewingResponses(null)}>
-        <DialogContent>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>Responses for {viewingResponses?.title}</DialogHeader>
           <div className="space-y-4 py-4">
             {viewingResponses?.responses?.length ? (

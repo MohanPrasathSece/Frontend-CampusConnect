@@ -85,7 +85,7 @@ const ComplaintPage = () => {
 
         <div className="space-y-4">
           {filtered.map((c: Complaint) => (
-            <Card key={c._id} className="p-4 space-y-2">
+            <Card key={c._id} className={`p-4 space-y-2 ${c.status==='Resolved'?'bg-green-50 border border-green-300':c.status==='In Progress'?'bg-yellow-50 border border-yellow-300':''}`}>
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="font-semibold">{c.category}</h2>

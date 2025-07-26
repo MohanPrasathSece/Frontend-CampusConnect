@@ -1,0 +1,11 @@
+@layer utilities {
+  /* So tinted cards don't turn unreadable in dark mode */
+  .dark .bg-green-50 { @apply bg-green-900/40; }
+  .dark .bg-lime-50 { @apply bg-lime-900/40; }
+  .dark .bg-emerald-50 { @apply bg-emerald-900/40; }
+  .dark .bg-sky-50 { @apply bg-sky-900/30; }
+  .dark .bg-blue-50 { @apply bg-blue-900/30; }
+  .dark .bg-purple-50 { @apply bg-purple-900/30; }
+  .dark .bg-orange-50 { @apply bg-orange-900/40; }
+  .dark .border-sky-400\/70 { @apply border-sky-500/50; }
+}

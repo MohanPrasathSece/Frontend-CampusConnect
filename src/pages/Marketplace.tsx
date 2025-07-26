@@ -142,7 +142,7 @@ const Marketplace = () => {
       {/* Add item dialog */}
       {user && (
         <Dialog open={showAdd} onOpenChange={setShowAdd}>
-          <DialogContent className="space-y-3">
+          <DialogContent className="max-w-md space-y-4">
             <DialogHeader>List an Item</DialogHeader>
             <Input placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
             <textarea className="border rounded p-2 w-full" rows={3} placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} />

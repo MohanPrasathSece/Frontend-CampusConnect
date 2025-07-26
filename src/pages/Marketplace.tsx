@@ -18,6 +18,7 @@ type Item = {
   title: string;
   description: string;
   price: number;
+  expiresAt: string;
   contact: string;
   category: string;
   seller: string;
@@ -43,12 +44,23 @@ const Marketplace = () => {
         <div className="space-y-4">
           {items.map(item => (
             <Card key={item._id} className="p-4 flex flex-col md:flex-row md:items-center md:justify-between">
-              <div>
+              <div className="flex-1 space-y-1">
                 <h2 className="font-semibold text-lg">{item.title}</h2>
-                <p className="text-sm text-muted-foreground mb-1">{item.description}</p>
-                <p className="text-sm">Contact: {item.contact}</p>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
+                <p className="text-sm">Type: {item.category}</p>
+                <p className="text-sm">Expires: {new Date(item.expiresAt).toLocaleDateString()}</p>
+                <div className="flex gap-2 mt-1">
+                  <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
+                  {user && (user.id===item.seller || user.role==='admin') && (
+                    <Button variant="destructive" size="sm" onClick={async()=>{
+                      if(!window.confirm('Delete this listing?')) return;
+                      await api.delete(`/marketplace/${item._id}`);
+                      qc.invalidateQueries({queryKey:['marketplace']});
+                    }}>Delete</Button>
+                  )}
+                </div>
               </div>
-              <div className="mt-2 md:mt-0 text-primary font-bold">
+              <div className="mt-2 md:mt-0 text-primary font-bold min-w-[80px] text-right">
                 {item.price === 0 ? 'Free / Donate' : `₹${item.price}`}
               </div>
             </Card>
@@ -67,6 +79,7 @@ const Marketplace = () => {
             <select aria-label="Category" className="border rounded p-2 w-full" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}>
               <option value="books">Books</option>
               <option value="equipment">Equipment</option>
+              <option value="electronics">Electronics</option>
               <option value="other">Other</option>
             </select>
             <Input placeholder="Contact info" value={form.contact} onChange={e=>setForm({...form,contact:e.target.value})}/>

@@ -81,6 +81,11 @@ const Header = () => {
                 Skill Market
               </Button>
             </Link>
+            <Link to="/marketplace">
+              <Button variant="ghost" className={`text-muted-foreground hover:text-foreground ${location.pathname === '/marketplace' ? 'text-primary bg-primary/10' : ''}`}>
+                Marketplace
+              </Button>
+            </Link>
             <Link to="/polls">
               <Button variant="ghost" className={`text-muted-foreground hover:text-foreground ${location.pathname === '/polls' ? 'text-primary bg-primary/10' : ''}`}>
                 Polls

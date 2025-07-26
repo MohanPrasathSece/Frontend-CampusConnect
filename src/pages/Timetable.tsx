@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/services/api";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface SlotForm {
   day: string;
@@ -33,6 +33,11 @@ const Timetable = () => {
   const { data } = useTimetable();
   const { user } = useAuth();
   const [slots,setSlots]=useState<SlotForm[]>(data?.slots ?? []);
+
+  // keep local slots in sync when data from server arrives
+  useEffect(()=>{
+    if(data?.slots) setSlots(data.slots);
+  },[data]);
   const [slot, setSlot] = useState<SlotForm>({ day: "Monday", startTime: "09:00", endTime: "10:00", subject: "" });
   const [editIndex,setEditIndex]=useState<number|null>(null);
   const [submitting,setSubmitting]=useState(false);

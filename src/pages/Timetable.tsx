@@ -117,7 +117,7 @@ const Timetable = () => {
                         <p className="text-xs text-muted-foreground">{s.startTime} - {s.endTime}</p>
                       </div>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={()=>handleEdit(sortedSlots.indexOf(s))}><Pencil className="h-4 w-4"/></Button>
+                        <Button variant="ghost" size="icon" onClick={()=>handleEdit(slots.indexOf(s))}><Pencil className="h-4 w-4"/></Button>
                         <Button variant="ghost" size="icon" onClick={()=>handleDelete(sortedSlots.indexOf(s))}><Trash className="h-4 w-4 text-destructive"/></Button>
                       </div>
                     </li>

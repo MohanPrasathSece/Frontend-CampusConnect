@@ -60,6 +60,7 @@ const Marketplace = () => {
             const acceptedInt = item.interests?.find(i => i.accepted);
             const isSold = !!acceptedInt;
             const sellerName = item.sellerEmail ? item.sellerEmail.split('@')[0] : 'User';
+            const displayPrice = item.price===0 ? 'Free' : `₹${item.price}`;
             const isMe = user && user.id === item.seller;
             return (
               <Card key={item._id} className={`p-4 flex flex-col md:flex-row md:items-center md:justify-between ${isSold ? 'opacity-90' : ''}`}>
@@ -70,6 +71,7 @@ const Marketplace = () => {
                   <p className="text-sm">Seller: {sellerName}</p>
                   <p className="text-sm">Type: {item.category}</p>
                   <p className="text-sm">Expires: {new Date(item.expiresAt).toLocaleDateString()}</p>
+                   <p className="text-sm font-semibold">Price: {displayPrice}</p>
                   <div className="flex gap-2 mt-1">
                     {/* Interested / View Interests */}
                     {!isSold && user && user.id!==item.seller && (

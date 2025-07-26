@@ -142,6 +142,7 @@ const Marketplace = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      )}
 
       {/* Interests Dialog */}
       <Dialog open={!!showInterestsId} onOpenChange={(v)=>{if(!v) setShowInterestsId(null);}}>
@@ -177,7 +178,6 @@ const Marketplace = () => {
           )}
         </DialogContent>
       </Dialog>
-      )}
     </>
   );
 };

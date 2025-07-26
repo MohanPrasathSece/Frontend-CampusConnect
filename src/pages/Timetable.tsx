@@ -116,12 +116,10 @@ const Timetable = () => {
                         <p className="font-medium text-sm">{s.subject}</p>
                         <p className="text-xs text-muted-foreground">{s.startTime} - {s.endTime}</p>
                       </div>
-                      {user?.role==='admin' && (
-                        <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" onClick={()=>handleEdit(sortedSlots.indexOf(s))}><Pencil className="h-4 w-4"/></Button>
-                          <Button variant="ghost" size="icon" onClick={()=>handleDelete(sortedSlots.indexOf(s))}><Trash className="h-4 w-4 text-destructive"/></Button>
-                        </div>
-                      )}
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" onClick={()=>handleEdit(sortedSlots.indexOf(s))}><Pencil className="h-4 w-4"/></Button>
+                        <Button variant="ghost" size="icon" onClick={()=>handleDelete(sortedSlots.indexOf(s))}><Trash className="h-4 w-4 text-destructive"/></Button>
+                      </div>
                     </li>
                   ))}
                 </ul>

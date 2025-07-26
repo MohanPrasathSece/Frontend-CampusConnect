@@ -13,6 +13,8 @@ const fetchItems = async () => {
   return res.data;
 };
 
+type Interest = { user: string; phone: string };
+
 type Item = {
   _id: string;
   title: string;
@@ -22,12 +24,14 @@ type Item = {
   contact: string;
   category: string;
   seller: string;
+  interests?: Interest[];
 };
 
 const Marketplace = () => {
   const { user } = useAuth();
   const { data: items = [] } = useQuery<Item[]>({ queryKey: ['marketplace'], queryFn: fetchItems });
   const qc = useQueryClient();
+  const [deletingId,setDeletingId]=useState<string|null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', price: '', category: 'books', contact: '', days: 7 });
 
@@ -50,15 +54,42 @@ const Marketplace = () => {
                 <p className="text-sm">Type: {item.category}</p>
                 <p className="text-sm">Expires: {new Date(item.expiresAt).toLocaleDateString()}</p>
                 <div className="flex gap-2 mt-1">
+                  {/* Interested / View Interests */}
+                  {user && user.id!==item.seller && (
+                    item.interests?.some(i=>i.user===user.id) ? (
+                      <span className="text-green-600 font-medium">Requested</span>
+                    ) : (
+                      <Button size="sm" variant="outline" onClick={async()=>{
+                        const phone=prompt('Your phone number');
+                        if(!phone) return;
+                        await api.post(`/marketplace/${item._id}/interested`,{phone});
+                        qc.invalidateQueries({queryKey:['marketplace']});
+                      }}>Interested</Button>
+                    )
+                  )}
+                  {user && (user.id===item.seller || user.role==='admin') && (
+                    <Button size="sm" variant="secondary" onClick={async()=>{
+                      const res=await api.get(`/marketplace/${item._id}/interests`);
+                      const list=res.data as Interest[];
+                      if(!list.length){alert('No interests yet');return;}
+                      alert(list.map(i=>`${i.phone}`).join('\n'));
+                    }}>View Interests</Button>
+                  )}
+
                   {(!user || user.id!==item.seller) && (
                     <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
                   )}
                   {user && (user.id===item.seller || user.role==='admin') && (
-                    <Button variant="destructive" size="sm" onClick={async()=>{
+                    <Button variant="destructive" size="sm" disabled={deletingId===item._id} onClick={async()=>{
                       if(!window.confirm('Delete this listing?')) return;
-                      await api.delete(`/marketplace/${item._id}`);
-                      qc.invalidateQueries({queryKey:['marketplace']});
-                    }}>Delete</Button>
+                      try{
+                        setDeletingId(item._id);
+                        await api.delete(`/marketplace/${item._id}`);
+                        qc.invalidateQueries({queryKey:['marketplace']});
+                      }finally{
+                        setDeletingId(null);
+                      }
+                    }}>{deletingId===item._id? 'Deleting...':'Delete'}</Button>
                   )}
                 </div>
               </div>
@@ -91,7 +122,7 @@ const Marketplace = () => {
                 await api.post('/marketplace',{...form,price:Number(form.price||0)});
                 qc.invalidateQueries({queryKey:['marketplace']});
                 setShowAdd(false);
-                setForm({ title: '', description: '', price: 0, category: 'books', contact: '', days: 7 });
+                setForm({ title: '', description: '', price: '', category: 'books', contact: '', days: 7 });
               }}>Post</Button>
             </DialogFooter>
           </DialogContent>

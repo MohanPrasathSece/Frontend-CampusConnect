@@ -299,7 +299,7 @@ const LostFound = () => {
       <Dialog open={!!viewingResponses} onOpenChange={() => setViewingResponses(null)}>
         <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>Responses for {viewingResponses?.title}</DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
             {viewingResponses?.responses?.length ? (
               viewingResponses.responses.map((r) => (
                 <Card key={r.finder.email} className="p-3 space-y-2">

@@ -17,6 +17,16 @@ interface SlotForm {
 }
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+// Tailwind pastel background colors for each day
+const dayColors = [
+  "bg-red-50",
+  "bg-orange-50",
+  "bg-amber-50",
+  "bg-lime-50",
+  "bg-teal-50",
+  "bg-sky-50",
+  "bg-fuchsia-50",
+];
 
 const Timetable = () => {
   const { data } = useTimetable();
@@ -94,7 +104,7 @@ const Timetable = () => {
             </thead>
             <tbody>
               {sortedSlots.map((s,i)=>(
-                <tr key={i} className="border-t">
+                <tr key={i} className={`border-t ${dayColors[dayIdx(s.day)%dayColors.length]}`}>
                   <td className="p-2">{s.day}</td>
                   <td className="p-2">{s.startTime}</td>
                   <td className="p-2">{s.endTime}</td>

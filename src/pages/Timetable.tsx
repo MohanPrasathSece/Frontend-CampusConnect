@@ -143,15 +143,7 @@ const Timetable = () => {
           ) : (
             <Button onClick={handleUpdate} disabled={submitting}>{submitting?"Saving...":"Update"}</Button>
           )}
-                
-                  key={i}
-                  className={`border-t ${dayStyles[dayIdx(s.day)%dayStyles.length]} ${i%2===0?'bg-muted/5':''}`}
-                >
-                  <td className="p-2">{s.day}</td>
-                  <td className="p-2">{s.startTime}</td>
         </Card>
-            {editIndex===null ? (
-              <Button onClick={handleAdd} disabled={submitting}>{submitting?"Saving...":"Add"}</Button>
       </div>
     </>
   );

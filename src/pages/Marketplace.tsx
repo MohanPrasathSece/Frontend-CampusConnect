@@ -46,12 +46,15 @@ const Marketplace = () => {
       <Header />
       <div className="container mx-auto px-4 py-6 space-y-6 max-w-3xl">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white bg-blue-600 px-4 py-2 rounded-lg shadow">Student Marketplace</h1>
+          <div className="bg-blue-600 px-4 py-3 rounded-xl shadow flex flex-col items-center text-white animate-fade-in">
+            <span className="text-xl md:text-2xl font-bold leading-tight">Student Marketplace</span>
+            <span className="text-xs md:text-sm tracking-wide opacity-90 mt-0.5">BUY &amp; SELL ITEMS HERE</span>
+          </div>
           {user && (
             <Button onClick={() => setShowAdd(true)}>List Item</Button>
           )}
         </div>
-        <p className="text-sm text-muted-foreground mb-4">BUY AND SELL ITEMS here.</p>
+        
         <div className="space-y-4">
           {items.map(item => {
             const acceptedInt = item.interests?.find(i => i.accepted);

@@ -29,7 +29,7 @@ const Marketplace = () => {
   const { data: items = [] } = useQuery<Item[]>({ queryKey: ['marketplace'], queryFn: fetchItems });
   const qc = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', price: 0, category: 'books', contact: '', days: 7 });
+  const [form, setForm] = useState({ title: '', description: '', price: '', category: 'books', contact: '', days: 7 });
 
   return (
     <>
@@ -75,18 +75,18 @@ const Marketplace = () => {
             <DialogHeader>List an Item</DialogHeader>
             <Input placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
             <textarea className="border rounded p-2 w-full" rows={3} placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} />
-            <Input type="number" placeholder="Price (0 for free)" value={form.price} onChange={e=>setForm({...form,price:Number(e.target.value)})}/>
-            <select aria-label="Category" className="border rounded p-2 w-full" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}>
+            <Input type="number" placeholder="Price (₹) — 0 for free" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/>
+            <select aria-label="Type" className="border rounded p-2 w-full" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}>
               <option value="books">Books</option>
               <option value="equipment">Equipment</option>
               <option value="electronics">Electronics</option>
               <option value="other">Other</option>
             </select>
             <Input placeholder="Contact info" value={form.contact} onChange={e=>setForm({...form,contact:e.target.value})}/>
-            <Input type="number" placeholder="Expires in days" value={form.days} onChange={e=>setForm({...form,days:Number(e.target.value)})}/>
+            <Input type="number" placeholder="Expires (days)" value={form.days} onChange={e=>setForm({...form,days:Number(e.target.value)})}/>
             <DialogFooter>
               <Button onClick={async()=>{
-                await api.post('/marketplace',form);
+                await api.post('/marketplace',{...form,price:Number(form.price||0)});
                 qc.invalidateQueries({queryKey:['marketplace']});
                 setShowAdd(false);
                 setForm({ title: '', description: '', price: 0, category: 'books', contact: '', days: 7 });

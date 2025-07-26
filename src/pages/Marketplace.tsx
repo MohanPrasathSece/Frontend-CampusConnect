@@ -36,7 +36,7 @@ const Marketplace = () => {
       <Header />
       <div className="container mx-auto px-4 py-6 space-y-6 max-w-3xl">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Student Marketplace</h1>
+          <h1 className="text-2xl font-bold text-white bg-blue-600 px-4 py-2 rounded-lg shadow">Student Marketplace</h1>
           {user && (
             <Button onClick={() => setShowAdd(true)}>List Item</Button>
           )}
@@ -50,7 +50,9 @@ const Marketplace = () => {
                 <p className="text-sm">Type: {item.category}</p>
                 <p className="text-sm">Expires: {new Date(item.expiresAt).toLocaleDateString()}</p>
                 <div className="flex gap-2 mt-1">
-                  <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
+                  {(!user || user.id!==item.seller) && (
+                    <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
+                  )}
                   {user && (user.id===item.seller || user.role==='admin') && (
                     <Button variant="destructive" size="sm" onClick={async()=>{
                       if(!window.confirm('Delete this listing?')) return;
@@ -61,7 +63,7 @@ const Marketplace = () => {
                 </div>
               </div>
               <div className="mt-2 md:mt-0 text-primary font-bold min-w-[80px] text-right">
-                {item.price === 0 ? 'Free / Donate' : `₹${item.price}`}
+                {item.price === 0 ? 'Available' : `₹${item.price}`}
               </div>
             </Card>
           ))}

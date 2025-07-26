@@ -110,7 +110,6 @@ const Marketplace = () => {
                    )}
                   {user && (user.id===item.seller || user.role==='admin') && (
                     <Button variant="destructive" size="sm" disabled={deletingId===item._id} onClick={async()=>{
-                      if(!window.confirm('Delete this listing?')) return;
                       try{
                         setDeletingId(item._id);
                         await api.delete(`/marketplace/${item._id}`);

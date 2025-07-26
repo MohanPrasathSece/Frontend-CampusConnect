@@ -33,7 +33,9 @@ const Polls = () => {
     <>
       <Header />
       <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-4">Campus Polls & Feedback</h1>
+        <div className="bg-blue-600 px-4 py-3 rounded-xl shadow flex flex-col items-center text-white mb-4">
+            <span className="text-xl md:text-2xl font-bold leading-tight">Campus Polls &amp; Feedback</span>
+          </div>
         {/* Admin create poll */}
         {user?.role==='admin' && (
           <Card className="p-6 space-y-4">

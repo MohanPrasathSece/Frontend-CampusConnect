@@ -53,6 +53,7 @@ const SkillMarket = () => {
   // booking state
   const [selectedOffer, setSelectedOffer] = useState<SkillOffer | null>(null);
   const [slot, setSlot] = useState('');
+  const [phone,setPhone] = useState('');
 
   const createOffer = async () => {
     const payload = {
@@ -76,13 +77,14 @@ const SkillMarket = () => {
   };
 
   const requestBooking = async () => {
-    if(!window.confirm('Confirm booking request?')) return;
     if (!selectedOffer) return;
+    if(!phone){toast('Enter your phone number',{description:'Phone required'}); return;}
     const chosen = selectedOffer.availableSlots[parseInt(slot,10)];
-    await api.post(`/skills/${selectedOffer._id}/book`, { slot: chosen });
+    await api.post(`/skills/${selectedOffer._id}/book`, { slot: chosen, phone });
     toast('Booking requested');
     setRequestedIds([...requestedIds, selectedOffer._id]);
     setSelectedOffer(null);
+    setPhone('');
   };
 
   const handleDelete = async (id: string) => {
@@ -219,6 +221,12 @@ const SkillMarket = () => {
                 </option>
               ))}
             </select>
+            <input
+              className="border rounded p-2 w-full"
+              placeholder="Your phone number"
+              value={phone}
+              onChange={e=>setPhone(e.target.value)}
+            />
             <DialogFooter>
               <Button disabled={!slot} onClick={requestBooking}>
                 Request
@@ -239,13 +247,14 @@ const SkillMarket = () => {
                 <div>
                   <p className="font-medium">{b.student?.name ?? 'Unknown'}</p>
                   <p className="text-xs text-muted-foreground">{`${b.slot.day} ${b.slot.start}-${b.slot.end}`}</p>
+                  {b.phone && <p className="text-xs">Phone: {b.phone}</p>}
                   {requestsOffer.requiredSkill && <p className="text-xs">Exchange skill offered: {requestsOffer.requiredSkill}</p>}
                 </div>
                 {b.status==='pending'? (
                   <Button size="sm" onClick={async ()=>{await api.patch(`/skills/bookings/${b._id}`,{status:'accepted'}); toast('Accepted'); refetchBookings(); queryClient.invalidateQueries({queryKey:['skills']});}}>
                     Accept
                   </Button>
-                ) : <Badge variant="success">Accepted</Badge>}
+                ) : <Badge variant="secondary">Accepted</Badge>}
               </Card>
             ))}
           </DialogContent>

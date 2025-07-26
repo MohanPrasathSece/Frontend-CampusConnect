@@ -96,60 +96,62 @@ const Timetable = () => {
             <p className="text-sm opacity-90">Plan your study schedule efficiently</p>
           </div>
         </div>
-        <Card className="p-4 overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-muted/50">
-              <tr>
-                <th className="text-left p-2">Day</th>
-                <th className="text-left p-2">Start</th>
-                <th className="text-left p-2">End</th>
-                <th className="text-left p-2">Subject</th>
-                {user?.role==='admin' && (
-                  <th className="text-left p-2">Actions</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {sortedSlots.map((s,i)=>(
-                <tr
+        {/* Timetable grid */}
+        <div className="space-y-6">
+          {days.map((d,di)=>{
+            const daySlots = sortedSlots.filter(s=>s.day===d);
+            if(daySlots.length===0) return null;
+            return (
+              <Card key={d} className={`${di%2===0?'bg-sky-50':'bg-white'} p-4 shadow-sm`}>
+                <h2 className="text-lg font-semibold mb-2 text-sky-700 flex items-center"><Calendar className="h-4 w-4 mr-1" />{d}</h2>
+                <ul className="space-y-2">
+                  {daySlots.map((s,i)=>(
+                    <li key={i} className="flex items-center justify-between border-l-4 pl-3 py-1 border-sky-400/70 bg-white rounded-md shadow-sm">
+                      <div>
+                        <p className="font-medium text-sm">{s.subject}</p>
+                        <p className="text-xs text-muted-foreground">{s.startTime} - {s.endTime}</p>
+                      </div>
+                      {user?.role==='admin' && (
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" onClick={()=>handleEdit(sortedSlots.indexOf(s))}><Pencil className="h-4 w-4"/></Button>
+                          <Button variant="ghost" size="icon" onClick={()=>handleDelete(sortedSlots.indexOf(s))}><Trash className="h-4 w-4 text-destructive"/></Button>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            );
+          })}
+          {sortedSlots.length===0 && (
+            <Card className="p-6 text-center text-muted-foreground">No slots yet</Card>
+          )}
+        </div>
+
+        <Card className="p-4 space-y-3">
+          <h3 className="font-semibold">Add Slot</h3>
+          <select aria-label="Day" className="border rounded p-2 w-full" value={slot.day} onChange={e=>setSlot({...slot,day:e.target.value})}>
+            {days.map(d=> <option key={d} value={d}>{d}</option>)}
+          </select>
+          <div className="flex gap-3">
+            <Input type="time" value={slot.startTime} onChange={e=>setSlot({...slot,startTime:e.target.value})}/>
+            <Input type="time" value={slot.endTime} onChange={e=>setSlot({...slot,endTime:e.target.value})}/>
+          </div>
+          <Input placeholder="Subject" value={slot.subject} onChange={e=>setSlot({...slot,subject:e.target.value})}/>
+          {editIndex===null ? (
+            <Button onClick={handleAdd} disabled={submitting}>{submitting?"Saving...":"Add"}</Button>
+          ) : (
+            <Button onClick={handleUpdate} disabled={submitting}>{submitting?"Saving...":"Update"}</Button>
+          )}
+                
                   key={i}
                   className={`border-t ${dayStyles[dayIdx(s.day)%dayStyles.length]} ${i%2===0?'bg-muted/5':''}`}
                 >
                   <td className="p-2">{s.day}</td>
                   <td className="p-2">{s.startTime}</td>
-                  <td className="p-2">{s.endTime}</td>
-                  <td className="p-2">{s.subject}</td>
-                  <td className="p-2 space-x-1">
-                    <Button variant="ghost" size="icon" onClick={()=>handleEdit(i)}><Pencil className="h-4 w-4"/></Button>
-                    <Button variant="ghost" size="icon" onClick={()=>handleDelete(i)}><Trash className="h-4 w-4 text-destructive"/></Button>
-                  </td>
-                </tr>
-              ))}
-              {(!data?.slots || data.slots.length===0) && (
-                <tr><td colSpan={5} className="p-4 text-center text-muted-foreground">No slots yet</td></tr>
-              )}
-            </tbody>
-          </table>
         </Card>
-
-        {true && (
-          <Card className="p-4 space-y-3">
-            <h3 className="font-semibold">Add Slot</h3>
-            <select aria-label="Day" className="border rounded p-2 w-full" value={slot.day} onChange={e=>setSlot({...slot,day:e.target.value})}>
-              {days.map(d=> <option key={d} value={d}>{d}</option>)}
-            </select>
-            <div className="flex gap-3">
-              <Input type="time" value={slot.startTime} onChange={e=>setSlot({...slot,startTime:e.target.value})}/>
-              <Input type="time" value={slot.endTime} onChange={e=>setSlot({...slot,endTime:e.target.value})}/>
-            </div>
-            <Input placeholder="Subject" value={slot.subject} onChange={e=>setSlot({...slot,subject:e.target.value})}/>
             {editIndex===null ? (
               <Button onClick={handleAdd} disabled={submitting}>{submitting?"Saving...":"Add"}</Button>
-            ) : (
-              <Button onClick={handleUpdate} disabled={submitting}>{submitting?"Saving...":"Update"}</Button>
-            )}
-          </Card>
-        )}
       </div>
     </>
   );

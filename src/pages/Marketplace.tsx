@@ -13,7 +13,7 @@ const fetchItems = async () => {
   return res.data;
 };
 
-type Interest = { user: string; phone: string };
+type Interest = { _id:string; user: string; phone: string; accepted?: boolean; name?:string };
 
 type Item = {
   _id: string;
@@ -36,6 +36,8 @@ const Marketplace = () => {
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', image:'', price: '', category: 'books', contact: '', days: 7 });
   const [interestLoadingId,setInterestLoadingId]=useState<string|null>(null);
+  const [showInterestsId,setShowInterestsId]=useState<string|null>(null);
+  const [interests,setInterests]=useState<Interest[]>([]);
 
   return (
     <>
@@ -78,12 +80,10 @@ const Marketplace = () => {
                   {user && (user.id===item.seller || user.role==='admin') && (
                     <Button size="sm" variant="secondary" onClick={async()=>{
                       const res=await api.get(`/marketplace/${item._id}/interests`);
-                      const list=res.data as Interest[];
-                      if(!list.length){alert('No interests yet');return;}
-                      alert(list.map(i=>`${i.phone}`).join('\n'));
+                      setInterests(res.data as Interest[]);
+                      setShowInterestsId(item._id);
                     }}>View Interests</Button>
                   )}
-
                   {user && user.id!==item.seller && item.interests?.some(i=>i.user===user.id) && (
                     <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
                   )}
@@ -142,6 +142,41 @@ const Marketplace = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+      {/* Interests Dialog */}
+      <Dialog open={!!showInterestsId} onOpenChange={(v)=>{if(!v) setShowInterestsId(null);}}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>Interested Users</DialogHeader>
+          {interests.length===0 ? (
+            <p className="text-sm">No interests yet.</p>
+          ) : (
+            <div className="space-y-2 max-h-80 overflow-y-auto">
+              {interests.map(int=> (
+                <div key={int._id} className="flex items-center justify-between border rounded p-2">
+                  <div>
+                    <p className="font-medium">{int.name || 'User'}</p>
+                    <p className="text-sm text-muted-foreground">{int.phone}</p>
+                  </div>
+                  {int.accepted ? (
+                    <span className="text-green-600 text-sm">Accepted</span>
+                  ) : (
+                    <Button size="sm" disabled={interestLoadingId===int._id} onClick={async()=>{
+                      try{
+                        setInterestLoadingId(int._id);
+                        await api.post(`/marketplace/${showInterestsId}/interests/${int._id}/accept`);
+                        const res=await api.get(`/marketplace/${showInterestsId}/interests`);
+                        setInterests(res.data as Interest[]);
+                      }finally{
+                        setInterestLoadingId(null);
+                      }
+                    }}>Accept</Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
       )}
     </>
   );

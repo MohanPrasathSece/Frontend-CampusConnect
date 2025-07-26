@@ -108,7 +108,10 @@ const Marketplace = () => {
             <DialogHeader>List an Item</DialogHeader>
             <Input placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
             <textarea className="border rounded p-2 w-full" rows={3} placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} />
-            <Input type="number" placeholder="Price (₹) — 0 for free" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/>
+            <div className="space-y-1 w-full">
+              <label className="text-sm font-medium">Price (₹)</label>
+              <Input type="number" placeholder="0 for free" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/>
+            </div>
             <select aria-label="Type" className="border rounded p-2 w-full" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}>
               <option value="books">Books</option>
               <option value="equipment">Equipment</option>
@@ -116,7 +119,10 @@ const Marketplace = () => {
               <option value="other">Other</option>
             </select>
             <Input placeholder="Contact info" value={form.contact} onChange={e=>setForm({...form,contact:e.target.value})}/>
-            <Input type="number" placeholder="Expires (days)" value={form.days} onChange={e=>setForm({...form,days:Number(e.target.value)})}/>
+            <div className="space-y-1 w-full">
+              <label className="text-sm font-medium">Quantity</label>
+              <Input type="number" placeholder="1" value={form.days} onChange={e=>setForm({...form,days:Number(e.target.value)})}/>
+            </div>
             <DialogFooter>
               <Button onClick={async()=>{
                 await api.post('/marketplace',{...form,price:Number(form.price||0)});

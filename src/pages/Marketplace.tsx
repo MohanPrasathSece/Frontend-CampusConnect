@@ -24,6 +24,7 @@ type Item = {
   contact: string;
   category: string;
   seller: string;
+  sellerEmail?: string;
   image?: string;
   interests?: Interest[];
 };
@@ -35,6 +36,7 @@ const Marketplace = () => {
   const [deletingId,setDeletingId]=useState<string|null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', image:'', price: '', category: 'books', contact: '', days: 7 });
+  const [file, setFile] = useState<File | null>(null);
   const [interestLoadingId,setInterestLoadingId]=useState<string|null>(null);
   const [showInterestsId,setShowInterestsId]=useState<string|null>(null);
   const [interests,setInterests]=useState<Interest[]>([]);
@@ -49,44 +51,58 @@ const Marketplace = () => {
             <Button onClick={() => setShowAdd(true)}>List Item</Button>
           )}
         </div>
+        <p className="text-sm text-muted-foreground mb-4">BUY AND SELL ITEMS here.</p>
         <div className="space-y-4">
-          {items.map(item => (
-            <Card key={item._id} className="p-4 flex flex-col md:flex-row md:items-center md:justify-between">
-              {item.image && <img src={item.image} alt={item.title} className="w-full md:w-32 h-32 object-cover rounded mb-2" />}
-               <div className="flex-1 space-y-1">
-                <h2 className="font-semibold text-lg">{item.title}</h2>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
-                <p className="text-sm">Type: {item.category}</p>
-                <p className="text-sm">Expires: {new Date(item.expiresAt).toLocaleDateString()}</p>
-                <div className="flex gap-2 mt-1">
-                  {/* Interested / View Interests */}
-                  {user && user.id!==item.seller && (
-                    item.interests?.some(i=>i.user===user.id) ? (
-                      <span className="text-green-600 font-medium">Requested</span>
-                    ) : (
-                      <Button size="sm" variant="outline" disabled={interestLoadingId===item._id} onClick={async()=>{
-                        const phone=prompt('Your phone number');
-                        if(!phone) return;
-                        try{
-                          setInterestLoadingId(item._id);
-                          await api.post(`/marketplace/${item._id}/interested`,{phone});
-                          qc.invalidateQueries({queryKey:['marketplace']});
-                        }finally{
-                          setInterestLoadingId(null);
-                        }
-                      }}>{interestLoadingId===item._id?'Sending...':'Interested'}</Button>
+          {items.map(item => {
+            const acceptedInt = item.interests?.find(i => i.accepted);
+            const isSold = !!acceptedInt;
+            const sellerName = item.sellerEmail ? item.sellerEmail.split('@')[0] : 'User';
+            const isMe = user && user.id === item.seller;
+            return (
+              <Card key={item._id} className={`p-4 flex flex-col md:flex-row md:items-center md:justify-between ${isSold ? 'opacity-90' : ''}`}>
+                {item.image && <img src={item.image} alt={item.title} className="w-full md:w-32 h-32 object-cover rounded mb-2" />}
+                <div className="flex-1 space-y-1">
+                  <h2 className="font-semibold text-lg">{item.title}</h2>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <p className="text-sm">Seller: {sellerName}</p>
+                  <p className="text-sm">Type: {item.category}</p>
+                  <p className="text-sm">Expires: {new Date(item.expiresAt).toLocaleDateString()}</p>
+                  <div className="flex gap-2 mt-1">
+                    {/* Interested / View Interests */}
+                    {!isSold && user && user.id!==item.seller && (
+                      item.interests?.some(i=>i.user===user.id) ? (
+                        <span className="text-green-600 font-medium">Requested</span>
+                      ) : (
+                        <Button size="sm" variant="outline" disabled={interestLoadingId===item._id} onClick={async()=>{
+                          const phone=prompt('Your phone number');
+                          if(!phone) return;
+                          try{
+                            setInterestLoadingId(item._id);
+                            await api.post(`/marketplace/${item._id}/interested`,{phone});
+                            qc.invalidateQueries({queryKey:['marketplace']});
+                          }finally{
+                            setInterestLoadingId(null);
+                          }
+                        }}>{interestLoadingId===item._id?'Sending...':'Interested'}</Button>
+                      )
+                    )}
+                    {user && (user.id===item.seller || user.role==='admin') && (
+                      <Button size="sm" variant="secondary" onClick={async()=>{
+                        const res=await api.get(`/marketplace/${item._id}/interests`);
+                        setInterests(res.data as Interest[]);
+                        setShowInterestsId(item._id);
+                      }}>View Interests</Button>
+                    )}
+
+                    {isSold && !(user && (user.id===item.seller || user.id===acceptedInt?.user)) && (
+                      <span className="text-sm text-muted-foreground">Sold</span>
                     )
-                  )}
-                  {user && (user.id===item.seller || user.role==='admin') && (
-                    <Button size="sm" variant="secondary" onClick={async()=>{
-                      const res=await api.get(`/marketplace/${item._id}/interests`);
-                      setInterests(res.data as Interest[]);
-                      setShowInterestsId(item._id);
-                    }}>View Interests</Button>
-                  )}
-                  {user && user.id!==item.seller && item.interests?.some(i=>i.user===user.id) && (
-                    <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
-                  )}
+                    }
+
+                    
+                  {user && user.id!==item.seller && !isSold && item.interests?.some(i=>i.user===user.id) && (
+                     <a href={`tel:${item.contact}`} className="text-blue-600 underline">Call</a>
+                   )}
                   {user && (user.id===item.seller || user.role==='admin') && (
                     <Button variant="destructive" size="sm" disabled={deletingId===item._id} onClick={async()=>{
                       if(!window.confirm('Delete this listing?')) return;
@@ -102,10 +118,19 @@ const Marketplace = () => {
                 </div>
               </div>
               <div className="mt-2 md:mt-0 text-primary font-bold min-w-[80px] text-right">
-                {item.price === 0 ? 'Available' : `₹${item.price}`}
+                {isSold ? (
+                  user && user.id===item.seller ? (
+                    <span className="text-green-600">Closed</span>
+                  ) : (
+                    <span className="text-red-500">Sold</span>
+                  )
+                ) : (
+                  <span>{item.price === 0 ? 'Free' : `₹${item.price}`}</span>
+                )}
               </div>
             </Card>
-          ))}
+           );
+          })}
         </div>
       </div>
 
@@ -116,7 +141,11 @@ const Marketplace = () => {
             <DialogHeader>List an Item</DialogHeader>
             <Input placeholder="Title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/>
             <textarea className="border rounded p-2 w-full" rows={3} placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} />
-            <Input placeholder="Image URL (optional)" value={form.image} onChange={e=>setForm({...form,image:e.target.value})}/>
+            <div className="space-y-1 w-full">
+              <label className="text-sm font-medium">Quantity</label>
+              <Input type="number" placeholder="1" value={form.days} onChange={e=>setForm({...form,days:Number(e.target.value)})}/>
+            </div>
+            <Input type="file" accept="image/*" onChange={e=>setFile(e.target.files?.[0] || null)} />
             <div className="space-y-1 w-full">
               <label className="text-sm font-medium">Price (₹)</label>
               <Input type="number" placeholder="0 for free" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/>
@@ -134,7 +163,15 @@ const Marketplace = () => {
             </div>
             <DialogFooter>
               <Button onClick={async()=>{
-                await api.post('/marketplace',{...form,price:Number(form.price||0)});
+                const payload = {...form,price:Number(form.price||0)};
+                if(file){
+                  const fd = new FormData();
+                  Object.entries(payload).forEach(([k,v])=>fd.append(k,String(v)));
+                  fd.append('image',file);
+                  await api.post('/marketplace',fd,{headers:{'Content-Type':'multipart/form-data'}});
+                }else{
+                  await api.post('/marketplace',payload);
+                }
                 qc.invalidateQueries({queryKey:['marketplace']});
                 setShowAdd(false);
                 setForm({ title: '', description: '', image:'', price: '', category: 'books', contact: '', days: 7 });
@@ -155,11 +192,11 @@ const Marketplace = () => {
               {interests.map(int=> (
                 <div key={int._id} className="flex items-center justify-between border rounded p-2">
                   <div>
-                    <p className="font-medium">{int.name || 'User'}</p>
+                    <p className="font-medium">{typeof int.user === 'object' && (int.user as any)?.name ? (int.user as any).name : int.name ?? 'User'}</p>
                     <p className="text-sm text-muted-foreground">{int.phone}</p>
                   </div>
                   {int.accepted ? (
-                    <span className="text-green-600 text-sm">Accepted</span>
+                    <span className="text-green-600 text-sm">Sold</span>
                   ) : (
                     <Button size="sm" disabled={interestLoadingId===int._id} onClick={async()=>{
                       try{

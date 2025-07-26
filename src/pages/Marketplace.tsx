@@ -80,11 +80,10 @@ const Marketplace = () => {
                         <span className="text-green-600 font-medium">Requested</span>
                       ) : (
                         <Button size="sm" variant="outline" disabled={interestLoadingId===item._id} onClick={async()=>{
-                          const phone=prompt('Your phone number');
-                          if(!phone) return;
+                          
                           try{
                             setInterestLoadingId(item._id);
-                            await api.post(`/marketplace/${item._id}/interested`,{phone});
+                            await api.post(`/marketplace/${item._id}/interested`);
                             qc.invalidateQueries({queryKey:['marketplace']});
                           }finally{
                             setInterestLoadingId(null);

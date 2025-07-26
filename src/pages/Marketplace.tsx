@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/services/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toAbsoluteUrl } from "@/utils/toAbsoluteUrl";
 
 const fetchItems = async () => {
   const res = await api.get('/marketplace');
@@ -64,7 +65,7 @@ const Marketplace = () => {
             const isMe = user && user.id === item.seller;
             return (
               <Card key={item._id} className={`p-4 flex flex-col md:flex-row md:items-center md:justify-between ${isSold ? 'bg-green-50 border border-green-300' : ''}`}>
-                {item.image && <img src={item.image} alt={item.title} className="w-full md:w-32 h-32 object-cover rounded mb-2" />}
+                {item.image && <img src={toAbsoluteUrl(item.image)} alt={item.title} className="w-full md:w-32 h-32 object-cover rounded mb-2" />}
                 <div className="flex-1 space-y-1">
                   <h2 className="font-semibold text-lg">{item.title}</h2>
                   <p className="text-sm text-muted-foreground">{item.description}</p>

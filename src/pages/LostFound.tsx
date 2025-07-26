@@ -11,6 +11,7 @@ import { DialogTitle } from "@/components/ui/dialog";
 import { Plus, Filter, Trash } from "lucide-react";
 import api from "@/services/api";
 import dayjs from "dayjs";
+import { toAbsoluteUrl } from "@/utils/toAbsoluteUrl";
 import { toast } from "@/components/ui/use-toast";
 
 interface ResponseEntry {
@@ -147,7 +148,7 @@ const LostFound = () => {
             >
               {item.imageUrl && (
                 <img
-                  src={`${api.defaults.baseURL?.replace('/api', '')}${item.imageUrl}`}
+                  src={toAbsoluteUrl(item.imageUrl)}
                   alt={item.title}
                   className="w-full h-48 object-cover rounded-md"
                 />

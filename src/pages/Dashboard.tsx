@@ -240,15 +240,15 @@ const Dashboard = () => {
             <FileText className="h-6 w-6" />
             <span className="text-sm">File Complaint</span>
           </Button>
-          <Button variant="campus-outline" className="h-20 flex-col space-y-2" onClick={()=>navigate('/skills')}> 
+          <Button variant="campus-outline" className="h-20 flex-col space-y-2" onClick={() => navigate('/skills')}>
             <User className="h-6 w-6" />
             <span className="text-sm">Offer Skill</span>
           </Button>
-          <Button variant="campus-outline" className="h-20 flex-col space-y-2" onClick={()=>navigate('/timetable/add')}>
+          <Button variant="campus-outline" className="h-20 flex-col space-y-2" onClick={() => navigate('/lostfound')}>
             <Search className="h-6 w-6" />
             <span className="text-sm">Report Lost Item</span>
           </Button>
-          <Button variant="campus-outline" className="h-20 flex-col space-y-2" onClick={()=>navigate('/timetable/add')}>
+          <Button variant="campus-outline" className="h-20 flex-col space-y-2" onClick={() => navigate('/timetable')}>
             <Calendar className="h-6 w-6" />
             <span className="text-sm">Add Class</span>
           </Button>

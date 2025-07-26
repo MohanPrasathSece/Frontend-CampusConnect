@@ -7,5 +7,9 @@
   .dark .bg-blue-50 { @apply bg-blue-900/30; }
   .dark .bg-purple-50 { @apply bg-purple-900/30; }
   .dark .bg-orange-50 { @apply bg-orange-900/40; }
+  /* Generic light backgrounds -> dark navy */
+  .dark .bg-white { @apply bg-slate-800/80; }
+  .dark .bg-gray-50 { @apply bg-slate-800/60; }
+  .dark .bg-slate-50 { @apply bg-slate-800/60; }
   .dark .border-sky-400\/70 { @apply border-sky-500/50; }
 }

@@ -6,9 +6,7 @@ import {
   User, 
   LogOut,
   Menu,
-  X,
-  Sun,
-  Moon
+  X
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,19 +23,14 @@ const Header = () => {
   const { user: currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [dark,setDark]=useState<boolean>(()=>{
-    if(typeof window==='undefined') return false;
-    return localStorage.theme==='dark' || (!('theme'in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  });
-  useEffect(()=>{
-    if(dark){
+  
+  useEffect(() => {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.classList.add('dark');
-      localStorage.theme='dark';
-    }else{
+    } else {
       document.documentElement.classList.remove('dark');
-      localStorage.theme='light';
     }
-  },[dark]);
+  }, []);
   const location = useLocation();
 
   const toggleMobileMenu = () => {
@@ -154,10 +147,7 @@ const Header = () => {
               </Button>
             )}
 
-            {/* Dark mode toggle */}
-            <Button variant="ghost" size="icon" onClick={()=>setDark(!dark)} className="mr-2">
-              {dark ? <Sun className="h-5 w-5"/> : <Moon className="h-5 w-5"/>}
-            </Button>
+            
             {/* Mobile Menu Button */}
             <Button 
               variant="ghost" 
